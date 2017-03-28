@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+<body>
+<% include template/header.ejs %>
+
+<h1><%= title %></h1>
+
+<p><%= myName %> is awesome</p>
+
+<ul>
+    <% for(var i = 0; i < 5; i++){ %>
+        <li>
+            tuna
+        </li>
+    <% } %>
+</ul>
+
+
+<ul>
+    <% users.users.forEach(function(item){ %>
+        <li> <%= item.name%></li>
+    <% }); %>
+</ul>
+
+
+</body>
+</html>
