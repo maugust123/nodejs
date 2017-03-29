@@ -1,36 +1,48 @@
-var http = require('http');
-var stuff = require('./stuff');
-var fs = require('fs');
+//https://www.youtube.com/watch?v=w-7RQ46RgxU&list=PL4cUxeGkcC9gcy9lrvMJ75z9maRw4byYp
+
+var express = require('express');
+var bodyParser = require('body-parser');
+
+var app = express();
+
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 
-var server = http.createServer(function(req,res){
-   console.log('Request made was: ' + req.url);
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    var myReadStream = fs.createReadStream(__dirname + '/index.html', 'utf8');
-    myReadStream.pipe(res);
+app.set('view engine', 'ejs');
+app.use('/assets', express.static('assets'));//tell node which folder has all your static files
 
+
+app.get('/', function (req, res) {
+    //res.sendFile(__dirname + '/index.html');//Also this works
+    res.render('index');
 });
 
-server.listen(3000);
-console.log('Server is started now....');
+app.get('/profile/:name', function (req, res) {
 
-//console.log(stuff.adder(4, 8));
-//console.log(stuff.counter(['morgan', 'morgan','Anna']));
+    var person = {
+        age: 29,
+        job: "ninja",
+        hobbies: ["music", "movies", "green cover", "fun and jokes"]
+    };
 
+    res.render('profile', {
+        name: req.params.name,
+        data: person
+    });
+});
 
-//var myReadStream = fs.createReadStream(__dirname + '/readMe.txt', 'utf8');
-//var myWriteStream = fs.createWriteStream(__dirname + '/writeMe.txt');
+app.get('/contact', function (req, res) {
+    res.render('contact', {rq: req.query});
+});
 
-////First way to read and write data
-//myReadStream.on('data', function(chunk){
-//    console.log('new chunk received: ');
-////    console.log(chunk);
-//
-//    myWriteStream.write(chunk);
-//});
+// POST /contact gets urlencoded bodies
+app.post('/contact', urlencodedParser, function (req, res) {
+    console.log(req.body);
 
+    if (!req.body) return res.sendStatus(400)
+    res.render('contact-success', {data: req.body});
+})
 
-
-//Second way to read and write data using pipe
-
-//myReadStream.pipe(myWriteStream);
+app.listen(process.env.port || 3000);
+console.log('Server started...');
