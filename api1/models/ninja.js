@@ -5,7 +5,20 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const GeoData = require('./geodata');
+//const GeoData = require('./geodata');
+
+
+const GeoSchema = new Schema({
+    type:{
+        type:String,
+        default: "Point"
+    },
+    coordinates:{
+        type:[Number],
+        index:"2dsphere"
+    }
+});
+
 
 //Create ninja Schema and model
 
@@ -23,10 +36,7 @@ const NinjaSchema = new Schema({
         default: false
     },
     //Add in geo location
-    geometry:{
-        type:  Schema.ObjectId,
-        ref: GeoData
-    }
+    geometry: GeoSchema
 });
 
 
